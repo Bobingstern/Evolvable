@@ -259,8 +259,8 @@ class NeuralNetwork{
   
   
 
-  void mutate(float rate){
-    if (randf(0, 1) < 0.01){
+  void mutate(float rate, bool changeTop){
+    if (randf(0, 1) < 0.01 && changeTop){
       addNode();
     }
    
