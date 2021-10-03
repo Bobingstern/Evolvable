@@ -1,3 +1,8 @@
+/*
+Evolvable
+Inspired by Kenneth Stanley's NEAT algorithm
+Written by Anik Patel 2021
+*/
 #include <iostream>
 #include <random>
 #include <math.h>
