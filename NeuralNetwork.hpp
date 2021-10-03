@@ -10,7 +10,6 @@ Written by Anik Patel 2021
 #include <stdio.h>      /* printf, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>  
-#include <SFML/Graphics.hpp>
 #include <future>
 #include <vector>
 
