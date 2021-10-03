@@ -1,5 +1,5 @@
 # Evolvable
-A C++ Neuroevolution library to easily add evolvable and augmenting neural networks. Inpired by the NEAT algorithm by Kenneth Stanley, the topology or the neural network will change over time unlike classic Neuroevoltuion with a static topology meaning that you dont have to specify the topology of the network manually.
+A C++ Neuroevolution library to easily add evolvable and augmenting neural networks. Inpired by the NEAT algorithm by Kenneth Stanley, the topology of the neural network will change over time unlike classic Neuroevoltuion with a static topology meaning that you dont have to specify the topology of the network manually.
 
 <h2>Usage</h2>
 
