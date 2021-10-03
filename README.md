@@ -52,6 +52,7 @@ using namespace std;
 
 int main(){
     vector<int> topology = {2, 1}; //The topology of the neural network, topology will change throughout evolution
+    vector<float> inputs = {};
 
     //XOR problem: if 2 values are equal then return 0, if 2 values are not equal then return 1
 
