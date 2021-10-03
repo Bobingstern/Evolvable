@@ -117,7 +117,7 @@ int main(){
     for (int i=0;i<nns.size();i++){
       //Crossover 2 best networks and mutate by 20%
       nns[i] = nns[i].crossover(nns[elitists[0]], nns[elitists[1]]);
-      nns[i].mutate(0.2);
+      nns[i].mutate(0.2, true);
     }
     //---------------------------------------------------------------------
   }
