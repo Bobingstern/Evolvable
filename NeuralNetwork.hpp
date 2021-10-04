@@ -12,10 +12,13 @@ Written by Anik Patel 2021
 #include <time.h>  
 #include <future>
 #include <vector>
+#include "json.hpp"
+#include <fstream>
 
 #define E 2.71828182845904
 
 using namespace std;
+
 
 
 float randf(float lo, float hi) {
@@ -38,6 +41,7 @@ float sigmoid(float x) {
   return y;
 }
 
+
 class Connection{
   public:
     float weight;
@@ -46,6 +50,7 @@ class Connection{
     int toLayer;
     int toNeuron;
     float minMax = 1;
+    float bias = 0;
   Connection(int tl, int tn, int fl, int fn, float w){
     fromLayer = fl;
     fromNeuron = fn;
@@ -54,6 +59,14 @@ class Connection{
     weight = w;
   }
   void mutateWeight(){
+    bias+=randf(-0.01, 0.01);
+    if(bias > minMax){
+        bias = minMax;
+    }
+    if(bias < -minMax){
+        bias = -minMax;        
+    }
+    
     if (randf(0, 1) < 0.1){
       weight = randf(-minMax, minMax);
     }
@@ -74,7 +87,6 @@ class Neuron{
   public:
     vector<Connection> connections;
     float sum;
-  
   void mutate(float rate){
     for (int i=0;i<connections.size();i++){
       if (randf(0, 1) < rate){
@@ -104,18 +116,20 @@ class Layer{
 class NeuralNetwork{
   public:
     vector<Layer> layers;
-    float width = 1000;
-    float height = 150;
-    int biasNum = 0;
+    float width = 250;
+    float height = 50;
+    float biasNum = 0;
     int nextNode = 0;
+    float rad = 10;
+
+    
 
   NeuralNetwork(vector<int> topology){
+    //font.loadFromFile("ARIAL.TTF");
+    //text.setFont(font);
     for (int i=0;i<topology.size();i++){
       layers.push_back(Layer(topology[i]));
     }
-    layers[0].neurons.push_back(Neuron());    
-    layers[0].neurons[layers[0].neurons.size()-1].sum = 1;
-    biasNum = layers[0].neurons.size()-1;
     fullyConnect();
   }
   void printNetwork(bool cons){
@@ -152,13 +166,7 @@ class NeuralNetwork{
         }
       }
     }
-    // layers[0].neurons[layers[0].neurons.size()-1].connections.clear();
-    // layers[0].neurons[layers[0].neurons.size()-1].sum = 1;
-    // for (int i=1;i<layers.size()-1;i++){
-    //     for (int j=0;j<layers[i].neurons.size();j++){
-    //         layers[0].neurons[layers[0].neurons.size()-1].connections.push_back(Connection(0, biasNum, i, j, (randf(-1, 1))));
-    //     }
-    // }
+    
 
   }
   void resetNeurons(){
@@ -167,7 +175,6 @@ class NeuralNetwork{
         layers[i].neurons[j].sum = 0; 
       }
     }
-    layers[0].neurons[layers[0].neurons.size()-1].sum = 1;
   }
   
   void sigmoidLayer(int layer){
@@ -186,7 +193,7 @@ class NeuralNetwork{
       for (int j=0;j<c1.size();j++){
         layer2 = c1[j].toLayer;
 
-        layers[layer2].neurons[c1[j].toNeuron].sum += layers[layer1].neurons[i].sum * c1[j].weight;
+        layers[layer2].neurons[c1[j].toNeuron].sum += layers[layer1].neurons[i].sum * c1[j].weight + c1[j].bias;
         //printf("%d \n", layer2); 
       }
     }
@@ -264,6 +271,7 @@ class NeuralNetwork{
   
 
   void mutate(float rate, bool changeTop){
+    biasNum += randf(-0.01, 0.01);
     if (randf(0, 1) < 0.01 && changeTop){
       addNode();
     }
@@ -344,7 +352,38 @@ class NeuralNetwork{
     return parent;
     
   }
+  void saveToFile(std::string name){
+    nlohmann::json j;
+    vector<vector<int>> toFrom;
+    vector<float> weights;
+    vector<float> biases;
+    for (int i=0;i<layers.size()-1;i++){
+      for (int j=0;j<layers[i].neurons.size();j++){
+        for (int x=0;x<layers[i].neurons[j].connections.size();x++){
+          Connection con = layers[i].neurons[j].connections[x];
+          weights.push_back(con.weight);
+          biases.push_back(con.bias);
+          toFrom.push_back({con.toLayer, con.toNeuron, con.fromLayer, con.toLayer});
+        }
+      }
+    }
+    vector<int> top;
+    for (int i=0;i<layers.size();i++){
+      top.push_back(layers[i].neurons.size());
+    }
+    j["weight"] = weights;
+    j["biases"] = biases;
+    j["toFrom"] = toFrom;
+    j["topology"] = top;
+    std::ofstream file(name);
+    file << j;
+    file.close();
+    
+  }
+
+  
 
   
 };
+
 
