@@ -12,7 +12,6 @@ Written by Anik Patel 2021
 #include <time.h>  
 #include <future>
 #include <vector>
-#include "json.hpp"
 #include <fstream>
 
 #define E 2.71828182845904
@@ -352,34 +351,7 @@ class NeuralNetwork{
     return parent;
     
   }
-  void saveToFile(std::string name){
-    nlohmann::json j;
-    vector<vector<int>> toFrom;
-    vector<float> weights;
-    vector<float> biases;
-    for (int i=0;i<layers.size()-1;i++){
-      for (int j=0;j<layers[i].neurons.size();j++){
-        for (int x=0;x<layers[i].neurons[j].connections.size();x++){
-          Connection con = layers[i].neurons[j].connections[x];
-          weights.push_back(con.weight);
-          biases.push_back(con.bias);
-          toFrom.push_back({con.toLayer, con.toNeuron, con.fromLayer, con.toLayer});
-        }
-      }
-    }
-    vector<int> top;
-    for (int i=0;i<layers.size();i++){
-      top.push_back(layers[i].neurons.size());
-    }
-    j["weight"] = weights;
-    j["biases"] = biases;
-    j["toFrom"] = toFrom;
-    j["topology"] = top;
-    std::ofstream file(name);
-    file << j;
-    file.close();
-    
-  }
+  
 
   
 
